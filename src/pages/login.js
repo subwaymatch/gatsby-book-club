@@ -1,13 +1,12 @@
-import React, { useState } from "react"
-import { Link } from "gatsby"
-import { useAuth } from "../components/Firebase"
+import React, { useState, useContext } from "react"
+import { FirebaseContext } from "../components/Firebase"
+import { Form } from "../components/common/Form"
+import { Input } from "../components/common/Input"
+import { Button } from "../components/common/Button"
 
-import Layout from "../components/layout"
-import SEO from "../components/seo"
-
-const LoginPage = () => {
+const Login = () => {
   const [formValues, setFormValues] = useState({ email: "", password: "" })
-  const { firebase } = useAuth()
+  const { firebase } = useContext(FirebaseContext)
 
   function handleSubmit(e) {
     e.preventDefault()
@@ -25,26 +24,28 @@ const LoginPage = () => {
   }
 
   return (
-    <Layout>
-      <form onSubmit={handleSubmit}>
-        <input
+    <section>
+      <Form onSubmit={handleSubmit}>
+        <Input
           onChange={handleInputChange}
           value={formValues.email}
           name="email"
           type="email"
           placeholder="your@email.com"
         />
-        <input
+        <Input
           onChange={handleInputChange}
           value={formValues.password}
           name="password"
           type="password"
           placeholder="password"
         />
-        <button type="submit">Submit</button>
-      </form>
-    </Layout>
+        <Button type="submit" block>
+          Submit
+        </Button>
+      </Form>
+    </section>
   )
 }
 
-export default LoginPage
+export default Login

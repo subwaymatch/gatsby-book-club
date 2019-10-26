@@ -1,11 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 import { Link, graphql } from "gatsby"
-
-import Layout from "../components/layout"
 import BookItem from "../components/BookItem"
-import Image from "../components/image"
-import SEO from "../components/seo"
 
 const LinkButton = styled.div`
   text-align: right;
@@ -26,7 +22,7 @@ const LinkButton = styled.div`
 const IndexPage = props => {
   console.log(props)
   return (
-    <Layout>
+    <section>
       {props.data.allBook.edges.map(edge => (
         <BookItem
           key={edge.node.id}
@@ -40,7 +36,7 @@ const IndexPage = props => {
           </LinkButton>
         </BookItem>
       ))}
-    </Layout>
+    </section>
   )
 }
 

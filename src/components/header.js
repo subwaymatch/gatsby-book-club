@@ -12,6 +12,45 @@ const LogoutLink = styled.span`
   }
 `
 
+const HeaderWrapper = styled.header`
+  background: rebeccapurple;
+  margin-bottom: 1.45rem;
+`
+
+const HeaderContent = styled.div`
+  margin: 0 auto;
+  max-width: 960px;
+  padding: 1.45rem 1.0875rem;
+  display: flex;
+
+  > h1 {
+    margin: 0;
+    flex-grow: 1;
+
+    > a {
+      color: white;
+      text-decoration: none;
+    }
+  }
+
+  > div {
+    margin: auto 0;
+  }
+`
+
+const UserInfo = styled.div`
+  color: white;
+  text-align: right;
+`
+
+const LoginLink = styled.div`
+  margin: auto 0;
+
+  a {
+    color: white;
+  }
+`
+
 const Header = ({ siteTitle }) => {
   const { firebase, user } = useContext(FirebaseContext)
   console.log(firebase, user)
@@ -21,48 +60,28 @@ const Header = ({ siteTitle }) => {
   }
 
   return (
-    <header
-      style={{
-        background: `rebeccapurple`,
-        marginBottom: `1.45rem`,
-      }}
-    >
-      <div
-        style={{
-          margin: `0 auto`,
-          maxWidth: 960,
-          padding: `1.45rem 1.0875rem`,
-          display: `flex`,
-        }}
-      >
-        <h1 style={{ margin: 0, flexGrow: 1 }}>
-          <Link
-            to="/"
-            style={{
-              color: `white`,
-              textDecoration: `none`,
-            }}
-          >
-            {siteTitle}
-          </Link>
+    <HeaderWrapper>
+      <HeaderContent>
+        <h1>
+          <Link to="/">{siteTitle}</Link>
         </h1>
         <div style={{ margin: `auto 0` }}>
           {!!user && !!user.email && (
-            <div>
+            <UserInfo>
               Hello, {user.email}
-              <div style={{ textAlign: `right` }}>
+              <div>
                 <LogoutLink onClick={handleLogoutClick}>Log Out</LogoutLink>
               </div>
-            </div>
+            </UserInfo>
           )}
           {(!user || !user.email) && (
-            <div>
+            <LoginLink>
               <Link to="/login">Login</Link>
-            </div>
+            </LoginLink>
           )}
         </div>
-      </div>
-    </header>
+      </HeaderContent>
+    </HeaderWrapper>
   )
 }
 
