@@ -1,38 +1,38 @@
-import firebaseConfig from "./config";
-import axios from 'axios';
+import firebaseConfig from "./config"
+import axios from "axios"
 
 class Firebase {
   constructor(app) {
-    if(!firebaseInstance) {
-      app.initializeApp(firebaseConfig);
+    if (!firebaseInstance) {
+      app.initializeApp(firebaseConfig)
 
-      this.auth = app.auth();
-      this.db = app.firestore();
-      this.functions = app.functions();
-      this.storage = app.storage();
+      this.auth = app.auth()
+      this.db = app.firestore()
+      this.functions = app.functions()
+      this.storage = app.storage()
     }
   }
 
-  async login({email, password}) {
-    return this.auth.signInWithEmailAndPassword(email, password);
+  async login({ email, password }) {
+    return this.auth.signInWithEmailAndPassword(email, password)
   }
 
   async logout() {
-    await this.auth.signOut();
+    await this.auth.signOut()
   }
 }
 
-let firebaseInstance;
+let firebaseInstance
 
 function getFirebaseInstance(app) {
-  if(!firebaseInstance && app){
-    firebaseInstance = new Firebase(app);
-    return firebaseInstance;
-  }else if(firebaseInstance){
+  if (!firebaseInstance && app) {
+    firebaseInstance = new Firebase(app)
     return firebaseInstance
-  }else{
-    return null;
+  } else if (firebaseInstance) {
+    return firebaseInstance
+  } else {
+    return null
   }
 }
 
-export default getFirebaseInstance;
+export default getFirebaseInstance
