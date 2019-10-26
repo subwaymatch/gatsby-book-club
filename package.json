@@ -5,7 +5,9 @@
   "version": "0.1.0",
   "author": "Kyle Mathews <mathews.kyle@gmail.com>",
   "dependencies": {
+    "axios": "^0.19.0",
     "babel-plugin-styled-components": "^1.10.6",
+    "firebase": "^7.2.2",
     "gatsby": "^2.16.1",
     "gatsby-firesource": "^2.0.3",
     "gatsby-image": "^2.2.29",
