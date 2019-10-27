@@ -36,7 +36,6 @@ export const BookComments = ({ firebase, bookId }) => {
     const unsubscribe = firebase.subscribeToBookComments({
       bookId,
       onSnapshot: snapshot => {
-        console.log(snapshot)
         const snapshotComments = []
 
         snapshot.forEach(doc =>

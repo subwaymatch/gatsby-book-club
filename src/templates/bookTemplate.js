@@ -5,8 +5,6 @@ import BookItem from "../components/BookItem"
 import { BookComments } from "../components/common"
 
 const BookTemplate = props => {
-  console.log(props.data)
-
   const { firebase } = useContext(FirebaseContext)
 
   return (

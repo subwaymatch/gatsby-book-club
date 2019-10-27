@@ -9,6 +9,35 @@ const admin = require("firebase-admin")
 // });
 admin.initializeApp()
 
+exports.createAuthor = functions.https.onCall(async (data, context) => {
+  checkAuthentication(context, true)
+
+  validateData(data, {
+    authorName: "string",
+  })
+
+  const author = await admin
+    .firestore()
+    .collection("authors")
+    .where("name", "==", data.authorName)
+    .limit(1)
+    .get()
+
+  if (!author.empty) {
+    throw new functions.https.HttpsError(
+      "already-exists",
+      "This author already exists"
+    )
+  }
+
+  return admin
+    .firestore()
+    .collection("authors")
+    .add({
+      name: data.authorName,
+    })
+})
+
 exports.createPublicProfile = functions.https.onCall(async (data, context) => {
   checkAuthentication(context)
   validateData(data, {
@@ -27,6 +56,14 @@ exports.createPublicProfile = functions.https.onCall(async (data, context) => {
       "already-exists",
       "This user already has a public profile"
     )
+  }
+
+  const user = await admin.auth().getUser(context.auth.uid)
+
+  if (user.email === functions.config().accounts.admin) {
+    await admin.auth().setCustomUserClaims(context.auth.uid, {
+      isAdmin: true,
+    })
   }
 
   const publicProfile = await admin
@@ -92,11 +129,16 @@ function validateData(data, validKeys) {
   }
 }
 
-function checkAuthentication(context) {
+function checkAuthentication(context, isAdmin = false) {
   if (!context.auth) {
     throw new functions.https.HttpsError(
       "unauthenticated",
       "You must be signed in to use this feature"
+    )
+  } else if (!context.auth.token.isAdmin && isAdmin) {
+    throw new functions.https.HttpsError(
+      "permission-denied",
+      "You must be an admin to use this feature"
     )
   }
 }
