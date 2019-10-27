@@ -59,7 +59,7 @@ const Divider = styled.span`
 
 const Header = ({ siteTitle }) => {
   const { firebase, user } = useContext(FirebaseContext)
-  console.log(firebase, user)
+  console.log(user)
 
   function handleLogoutClick() {
     firebase.logout().then(() => navigate("/login"))
@@ -74,7 +74,7 @@ const Header = ({ siteTitle }) => {
         <div style={{ margin: `auto 0` }}>
           {!!user && !!user.email && (
             <UserInfo>
-              Hello, {user.email}
+              Hello, {user.username || user.email}
               <div>
                 <LogoutLink onClick={handleLogoutClick}>Log Out</LogoutLink>
               </div>

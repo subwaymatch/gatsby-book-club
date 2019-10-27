@@ -5,6 +5,7 @@ import { FirebaseContext } from "../components/Firebase"
 const Register = () => {
   const { firebase } = useContext(FirebaseContext)
   const [formValues, setFormValues] = useState({
+    username: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -26,6 +27,7 @@ const Register = () => {
     if (formValues.password === formValues.confirmPassword) {
       firebase
         .register({
+          username: formValues.username,
           email: formValues.email,
           password: formValues.password,
         })
@@ -41,6 +43,14 @@ const Register = () => {
 
   return (
     <Form onSubmit={handleSubmit}>
+      <Input
+        name="username"
+        type="text"
+        value={formValues.username}
+        onChange={handleInputChange}
+        placeholder="username"
+        required
+      />
       <Input
         name="email"
         type="email"
