@@ -14,11 +14,18 @@ class Firebase {
   }
 
   async getUserProfile({ userId }) {
-    console.log(`getUserProfile(userId=${userId})`)
     return this.db
       .collection("publicProfiles")
       .where("userId", "==", userId)
       .get()
+  }
+
+  subscribeToBookComments({ bookId, onSnapshot }) {
+    const bookRef = this.db.collection("books").doc(bookId)
+    return this.db
+      .collection("comments")
+      .where("book", "==", bookRef)
+      .onSnapshot(onSnapshot)
   }
 
   async register({ username, email, password }) {

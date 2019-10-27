@@ -7,6 +7,7 @@ export const Button = styled.button`
   border-radius: 4px;
   cursor: pointer;
   border: none;
+  white-space: nowrap;
   ${props => (props.block ? "display: block; width: 100%;" : "")}
 
   &:hover {

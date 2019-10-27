@@ -20,7 +20,6 @@ const LinkButton = styled.div`
 `
 
 const IndexPage = props => {
-  console.log(props)
   return (
     <section>
       {props.data.allBook.edges.map(edge => (
