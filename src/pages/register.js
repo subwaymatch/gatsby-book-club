@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react"
-import { Form, Input, Button } from "../components/common"
+import { Form, Input, Button, ErrorMessage } from "../components/common"
 import { FirebaseContext } from "../components/Firebase"
 
 const Register = () => {
@@ -9,9 +9,11 @@ const Register = () => {
     password: "",
     confirmPassword: "",
   })
+  const [errorMessage, setErrorMessage] = useState("")
 
   function handleInputChange(e) {
     e.persist()
+    setErrorMessage("")
     setFormValues(currentValues => ({
       ...currentValues,
       [e.target.name]: e.target.value,
@@ -22,10 +24,16 @@ const Register = () => {
     e.preventDefault()
 
     if (formValues.password === formValues.confirmPassword) {
-      firebase.register({
-        email: formValues.email,
-        password: formValues.password,
-      })
+      firebase
+        .register({
+          email: formValues.email,
+          password: formValues.password,
+        })
+        .catch(error => {
+          setErrorMessage(error.message)
+        })
+    } else {
+      setErrorMessage("Password and Confirm Password fields must match")
     }
 
     console.log(formValues)
@@ -48,7 +56,7 @@ const Register = () => {
         onChange={handleInputChange}
         placeholder="password"
         required
-        minLength={3}
+        minLength={6}
       />
       <Input
         name="confirmPassword"
@@ -57,8 +65,9 @@ const Register = () => {
         onChange={handleInputChange}
         placeholder="confirm password"
         required
-        minLength={3}
+        minLength={6}
       />
+      {!!errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
       <Button type="submit" block>
         Register
       </Button>

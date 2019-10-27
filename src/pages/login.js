@@ -1,19 +1,26 @@
 import React, { useState, useContext } from "react"
 import { FirebaseContext } from "../components/Firebase"
-import { Form, Input, Button } from "../components/common/"
+import { Form, Input, Button, ErrorMessage } from "../components/common/"
 
 const Login = () => {
   const [formValues, setFormValues] = useState({ email: "", password: "" })
+  const [errorMessage, setErrorMessage] = useState("")
   const { firebase } = useContext(FirebaseContext)
 
   function handleSubmit(e) {
     e.preventDefault()
 
-    firebase.login({ email: formValues.email, password: formValues.password })
+    firebase
+      .login({ email: formValues.email, password: formValues.password })
+      .catch(error => {
+        setErrorMessage(error.message)
+      })
   }
 
   function handleInputChange(e) {
     e.persist()
+
+    setErrorMessage("")
 
     setFormValues(currentValues => ({
       ...currentValues,
@@ -30,6 +37,7 @@ const Login = () => {
           name="email"
           type="email"
           placeholder="your@email.com"
+          required
         />
         <Input
           onChange={handleInputChange}
@@ -37,7 +45,9 @@ const Login = () => {
           name="password"
           type="password"
           placeholder="password"
+          required
         />
+        {!!errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
         <Button type="submit" block>
           Submit
         </Button>
