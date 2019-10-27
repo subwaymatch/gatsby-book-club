@@ -1,5 +1,6 @@
 const functions = require("firebase-functions")
 const admin = require("firebase-admin")
+const mimeTypes = require("mimetypes")
 
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
@@ -35,6 +36,49 @@ exports.createAuthor = functions.https.onCall(async (data, context) => {
     .collection("authors")
     .add({
       name: data.authorName,
+    })
+})
+
+exports.createBook = functions.https.onCall(async (data, context) => {
+  checkAuthentication(context, true)
+  validateData(data, {
+    bookName: "string",
+    authorId: "string",
+    bookCover: "string",
+    summary: "string",
+  })
+  const mimeType = data.bookCover.match(
+    /data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/
+  )[1]
+  const base64EncodedImageString = data.bookCover.replace(
+    /^data:image\/\w+;base64,/,
+    ""
+  )
+  const imageBuffer = new Buffer(base64EncodedImageString, "base64")
+
+  const filename = `bookCovers/${data.bookName}.${mimeTypes.detectExtension(
+    mimeType
+  )}`
+  const file = admin
+    .storage()
+    .bucket()
+    .file(filename)
+  await file.save(imageBuffer, { contentType: "image/jpeg" })
+  const fileUrl = await file
+    .getSignedUrl({ action: "read", expires: "03-09-2491" })
+    .then(urls => urls[0])
+
+  return admin
+    .firestore()
+    .collection("books")
+    .add({
+      title: data.bookName,
+      imageUrl: fileUrl,
+      author: admin
+        .firestore()
+        .collection("authors")
+        .doc(data.authorId),
+      summary: data.summary,
     })
 })
 
