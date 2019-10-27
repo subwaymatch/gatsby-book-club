@@ -28,6 +28,13 @@ class Firebase {
       .onSnapshot(onSnapshot)
   }
 
+  async bookComments({ text, bookId }) {
+    this.functions.postComment({
+      text,
+      bookId,
+    })
+  }
+
   async register({ username, email, password }) {
     const newUser = await this.auth.createUserWithEmailAndPassword(
       email,
