@@ -13,6 +13,10 @@ class Firebase {
     }
   }
 
+  async register({ email, password }) {
+    return this.auth.createUserWithEmailAndPassword(email, password)
+  }
+
   async login({ email, password }) {
     return this.auth.signInWithEmailAndPassword(email, password)
   }

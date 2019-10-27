@@ -1,8 +1,6 @@
 import React, { useState, useContext } from "react"
 import { FirebaseContext } from "../components/Firebase"
-import { Form } from "../components/common/Form"
-import { Input } from "../components/common/Input"
-import { Button } from "../components/common/Button"
+import { Form, Input, Button } from "../components/common/"
 
 const Login = () => {
   const [formValues, setFormValues] = useState({ email: "", password: "" })
