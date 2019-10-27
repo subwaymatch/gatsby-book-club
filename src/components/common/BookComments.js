@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import styled from "styled-components"
-
 import { Input, Button } from "../common"
+import moment from "moment"
 
 const CommentListItem = styled.div`
   > strong {
@@ -30,6 +30,7 @@ const CommentForm = styled.form`
 
 export const BookComments = ({ firebase, bookId }) => {
   const [comments, setComments] = useState([])
+  const [commentText, setCommentText] = useState("")
 
   useEffect(() => {
     const unsubscribe = firebase.subscribeToBookComments({
@@ -56,15 +57,33 @@ export const BookComments = ({ firebase, bookId }) => {
     }
   }, [])
 
+  function handlePostCommentSubmit(e) {
+    e.preventDefault()
+    firebase.postComment({
+      text: commentText,
+      bookId,
+    })
+  }
+
   return (
     <div>
-      <CommentForm>
-        <Input type="text" />
-        <Button>Post Comment</Button>
+      <CommentForm onSubmit={handlePostCommentSubmit}>
+        <Input
+          value={commentText}
+          onChange={e => {
+            e.persist()
+            setCommentText(e.target.value)
+          }}
+          type="text"
+        />
+        <Button type="submit">Post Comment</Button>
       </CommentForm>
       {comments.map(comment => (
         <CommentListItem key={comment.id}>
-          <strong>{comment.username}</strong>
+          <strong>
+            {comment.username} -{" "}
+            {moment(comment.dateCreated.toDate()).format("HH:mm Do MMM YYYY")}
+          </strong>
           <div>{comment.text}</div>
         </CommentListItem>
       ))}

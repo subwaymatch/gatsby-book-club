@@ -13,11 +13,12 @@ class Firebase {
     }
   }
 
-  async getUserProfile({ userId }) {
+  getUserProfile({ userId, onSnapshot }) {
     return this.db
       .collection("publicProfiles")
       .where("userId", "==", userId)
-      .get()
+      .limit(1)
+      .onSnapshot(onSnapshot)
   }
 
   subscribeToBookComments({ bookId, onSnapshot }) {
@@ -25,11 +26,14 @@ class Firebase {
     return this.db
       .collection("comments")
       .where("book", "==", bookRef)
+      .orderBy("dateCreated", "desc")
       .onSnapshot(onSnapshot)
   }
 
-  async bookComments({ text, bookId }) {
-    this.functions.postComment({
+  async postComment({ text, bookId }) {
+    const postCommentCallable = this.functions.httpsCallable("postComment")
+
+    return postCommentCallable({
       text,
       bookId,
     })
@@ -40,12 +44,14 @@ class Firebase {
       email,
       password
     )
-    return this.db
-      .collection("publicProfiles")
-      .doc(username)
-      .set({
-        userId: newUser.user.uid,
-      })
+
+    const createProfileCallable = this.functions.httpsCallable(
+      "createPublicProfile"
+    )
+
+    return createProfileCallable({
+      username,
+    })
   }
 
   async login({ email, password }) {
